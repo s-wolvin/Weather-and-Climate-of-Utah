@@ -1,0 +1,22 @@
+body {
+    background-color:dimgray;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+h1.title {
+    color: white;
+    background-color: dodgerblue;
+    width: 100%;
+    padding: 25px 0px 25px 0px;
+}
+
+
+
