@@ -63,7 +63,7 @@ gsl = gsl[['datetime','144230_62614_cd']]
 # rename
 gsl = gsl.rename(columns = {'144230_62614_cd': 'elev'})
 
-# Remove any fires missing discovery data or gisacres
+# Remove any observations missing date or elevation
 gsl = gsl.dropna(axis = 0)
 
 # formulate elevation per-month
