@@ -1,5 +1,5 @@
 body {
-    background-color:dimgray;
+    background-color:rgb(226, 226, 226);
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
@@ -7,9 +7,14 @@ h1 {
     text-align: center;
 }
 
-h3 {
+h2 {
     text-align: center;
 }
+
+h3 {
+    
+}
+
 
 h1.title {
     color: white;
@@ -18,5 +23,14 @@ h1.title {
     padding: 25px 0px 25px 0px;
 }
 
+/** used to allow the DIVs to be next to one another */ 
+.row { 
+    display: flex;
+    flex-wrap: wrap;
+}
 
+
+#utah-map-svg {
+    border: 2px solid black
+}
 

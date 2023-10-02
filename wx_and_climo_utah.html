@@ -6,7 +6,7 @@
     <title>Weather and Climate of Utah</title>
 
     <script src="https://d3js.org/d3.v7.min.js"></script> <!-- load library for figures -->
-    <script src="js/MAIN.js"></script> <!-- point to main JS file -->
+    
     <link rel="stylesheet" href="css/style.css"> <!-- point HTML to stylesheet -->
 
 </head>
@@ -16,28 +16,77 @@
         <h1 class="title">Weather and Climate of Utah</h1>
     </div>
 
-    <div id="station_climo">
-        <h3>Climatology of Individual Observation Stations</h3>
+    <div class="row chart">
+        <div class="chart">
+            <div id="utah-map-div">
+        
+            </div>
+            <p>Select Station to Plot Precipitaion and Temperature Climatology</p>
+        </div>
+    
+        <div class="chart">
+            <h2>Monthly and Yearly Climatology</h2>
+            <div id="station-climo-div">
+        
+            </div>
+        </div>
     </div>
+
+
+    <br />
+    <hr />
+    <br />
+
 
     <div id="gradients">
-        <h3>Orographic Gradients</h3>
+        <h2>Orographic Gradients</h2>
+
+        <span>
+            <label>Datatype</label>
+            <select id="dtype">
+                <option value="precip">Precipitation</option>
+                <option value="temp">Temperature</option>
+            </select>
+        </span>
+
 
     </div>
 
-    <div>
-        <h3>Natural Hazards and Water Resources</h3>
-        <div id="wildfire">
+    <br />
+    <hr />
+    <br />
 
 
+
+    <div class="">
+        <h2>Natural Hazards and Water Resources</h2>
+        <div class="chart">
+            <h3>Wildfires and Summertime Temperatures</h3>
+            <div id="wf-temp-div">
+
+            </div>
         </div>
 
-        <div id="gsl_level">
+        <div class="chart">
+            <h3>GSL Water Elevation and Wintertime Precipitation</h3>
+            <div id="gsl-precip-div">
 
-
+            </div>
         </div>
+    </div>
+
+    <br />
+    <hr />
+    <br />
+
+    <div> 
+        <h3> Data Availability</h3>
+
+
     </div>
 
 </body>
+
+<script src="js/MAIN.js"></script> <!-- point to main JS file -->
 
 </html>
