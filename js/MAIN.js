@@ -20,11 +20,18 @@ function main () {
     .attr('height', CHART_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'utah-map-svg');
 
+  // create div for monthly climo
   d3.select('#station-climo-div')
     .append('svg')
     .attr('width', CLIMO_WIDTH + MARGIN.left + MARGIN.right)
-    .attr('height', CHART_HEIGHT + MARGIN.top + MARGIN.bottom)
-    .attr('id', 'station-climo-svg');
+    .attr('height', (CHART_HEIGHT + MARGIN.top + MARGIN.bottom)/2)
+    .attr('id', 'monthly-climo-svg');
+
+  d3.select('#station-climo-div')
+    .append('svg')
+    .attr('width', CLIMO_WIDTH + MARGIN.left + MARGIN.right)
+    .attr('height', (CHART_HEIGHT + MARGIN.top + MARGIN.bottom)/2)
+    .attr('id', 'yearly-climo-svg');
 
 
   // call on functions to create default plots when the user enters page
@@ -61,9 +68,7 @@ function createMap () {
       .attr('stroke-width', 2)
       .attr('fill', '#ffe0b4');
 
-    
   });
-
 }
 
 
