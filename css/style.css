@@ -57,6 +57,7 @@ div#utah-map-div {
 /** for the climo temperature  */ 
 circle.temp {
     fill: red;
+    stroke: black;
 }
 
 /** for the climo temperature  */ 
@@ -66,17 +67,35 @@ path.temp {
     stroke-width: 5;
 }
 
+g.temp {
+    stroke: red;
+    color: red;
+}
+
+g.precip {
+    stroke: dodgerblue;
+    color: dodgerblue;
+}
+
 rect.precip {
     fill: dodgerblue;
+    stroke: black;
 }
 
 text.temp {
     fill: red;
     stroke: red;
+    color: red;
 }
 
 text.precip {
     fill: dodgerblue;
     stroke: dodgerblue;
+}
+
+path.gsl {
+    fill: none;
+    stroke: black;
+    stroke-width: 3;
 }
 

@@ -1,10 +1,15 @@
 // PLOT DEFAULTS
 const CHART_WIDTH = 500;
+const CHART_HEIGHT = 500;
+
 const MAP_WIDTH = 400;
 const MAP_HEIGHT = 600;
 const CLIMO_WIDTH = MAP_WIDTH*2;
 const CLIMO_HEIGHT = MAP_HEIGHT/2;
-const CHART_HEIGHT = 500;
+
+const NHWR_WIDTH = 700;
+const NHWR_HEIGHT = 400;
+
 const MARGIN = { left: 60, bottom: 20, top: 20, right: 20 };
 const ANIMATION_DUATION = 300;
 const WIDTH = CHART_WIDTH - MARGIN.left - MARGIN.right
@@ -17,7 +22,10 @@ async function loadData () {
   const pMonthly = await d3.csv('data/precip_monthly.csv');
   const tYearly = await d3.csv('data/temp_yearly.csv');
   const pYearly = await d3.csv('data/precip_yearly.csv');
-  return { metadata, tMonthly, pMonthly, tYearly, pYearly };
+
+  const gsl_water_level = await d3.csv('data/GSL_monthly_water_elev');
+  const wildfire_acres = await d3.csv('data/utah_wildfire_yearly_acres')
+  return { metadata, tMonthly, pMonthly, tYearly, pYearly, gsl_water_level, wildfire_acres };
 }
 
 
@@ -30,6 +38,11 @@ const globalAtmos = {
   pYearly: null,
 };
 
+const hazards_resources = {
+  gsl_water_level: [],
+  wildfire_acres: [],
+};
+
 loadData().then((loadedData) => {
 
   // load in station, precip, and temperature data
@@ -38,6 +51,9 @@ loadData().then((loadedData) => {
   globalAtmos.pMonthly = loadedData.pMonthly;
   globalAtmos.tYearly = loadedData.tYearly;
   globalAtmos.pYearly = loadedData.pYearly;
+
+  hazards_resources.gsl_water_level = loadedData.gsl_water_level;
+  hazards_resources.wildfire_acres = loadedData.wildfire_acres;
 
   // create svg for map
   d3.select('#utah-map-div')
@@ -58,6 +74,19 @@ loadData().then((loadedData) => {
     .attr('width', CLIMO_WIDTH + MARGIN.left + MARGIN.right)
     .attr('height', CLIMO_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'yearly-climo-svg');
+
+  d3.select('#wf-temp-div')
+    .append('svg')
+    .attr('width', "100%")
+    .attr('height', NHWR_HEIGHT + MARGIN.top + MARGIN.bottom)
+    .attr('id', 'wf-temp-svg');
+
+  d3.select('#gsl-precip-div')
+    .append('svg')
+    .attr('width', "100%")
+    .attr('height', NHWR_HEIGHT + MARGIN.top + MARGIN.bottom)
+    .attr('id', 'gsl-precip-svg');
+
 
 
   // call on functions to create default plots when the user enters page

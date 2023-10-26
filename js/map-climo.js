@@ -126,7 +126,8 @@ function createMap () {
     svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, 0)`)
       .call(d3.axisLeft(yScalePr).ticks(5))
-      .attr("id", "y-axis-monthly-pr");
+      .attr("id", "y-axis-monthly-pr")
+      .attr("class", "precip");
   
     d3.select("#y-axis-monthly-pr").append("text")
       .style("text-anchor", "middle")
@@ -145,7 +146,8 @@ function createMap () {
     svg.append('g')
       .attr('transform', `translate(${CLIMO_WIDTH}, 0)`)
       .call(d3.axisRight(yScaleT).ticks(5))
-      .attr("id", "y-axis-monthly-t");
+      .attr("id", "y-axis-monthly-t")
+      .attr("class", "temp");
   
     d3.select("#y-axis-monthly-t").append("text")
       .style("text-anchor", "middle")
@@ -221,7 +223,8 @@ function createMap () {
     svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, 0)`)
       .call(d3.axisLeft(yScalePr).ticks(5))
-      .attr("id", "y-axis-yearly-pr");
+      .attr("id", "y-axis-yearly-pr")
+      .attr("class", "precip");
   
     d3.select("#y-axis-yearly-pr").append("text")
       .style("text-anchor", "middle")
@@ -240,7 +243,8 @@ function createMap () {
     svg.append('g')
       .attr('transform', `translate(${CLIMO_WIDTH}, 0)`)
       .call(d3.axisRight(yScaleT).ticks(5))
-      .attr("id", "y-axis-yearly-t");
+      .attr("id", "y-axis-yearly-t")
+      .attr("class", "temp");
   
     d3.select("#y-axis-yearly-t").append("text")
       .style("text-anchor", "middle")
