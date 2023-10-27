@@ -1,26 +1,39 @@
 body {
-    background-color:rgb(226, 226, 226);
+    background-color: #383533;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 h1 {
-    text-align: center;
+    text-align: left;
     font-size: 50px;
+    color: #dfe8e9;
 }
 
 h2 {
     text-align: center;
+    font-size: 30px;
+    color: #dfe8e9;
 }
 
 h3 {
     text-align: center;
+    font-size: 25px;
+    font-style: italic;
+    color: #dfe8e9;
+}
+
+#banner {
+    width: 100%;
+    height: 175px;
+    background-image: url('../data/mtns.png');
+    background-size: cover;
+    background-position: center;
 }
 
 h1.title {
-    color: white;
-    background-color: dodgerblue;
+    color: #383533;
     width: 100%;
-    padding: 25px 0px 25px 0px;
+    padding: 10px 0px 0px 10px;
 }
 
 div#station-climo-div {
@@ -45,7 +58,6 @@ div#utah-map-div {
     flex: 30%;
 }
 
-
 #utah-map-svg {
     border: 2px solid black;
 }
@@ -56,46 +68,70 @@ div#utah-map-div {
 
 /** for the climo temperature  */ 
 circle.temp {
-    fill: red;
-    stroke: black;
+    fill: #e83f3f;
+    stroke: #dfe8e9;
+}
+
+circle.temp.hover {
+    fill: #e29393;
+    stroke: #dfe8e9;
+}
+
+rect.precip {
+    fill: #2b57cf;
+    stroke: #dfe8e9;
+}
+
+rect.precip.hover {
+    fill: #a1d3f5;
+    stroke: #dfe8e9;
 }
 
 /** for the climo temperature  */ 
 path.temp {
     fill: none;
-    stroke: red;
+    stroke: #e83f3f;
     stroke-width: 5;
-}
-
-g.temp {
-    stroke: red;
-    color: red;
-}
-
-g.precip {
-    stroke: dodgerblue;
-    color: dodgerblue;
-}
-
-rect.precip {
-    fill: dodgerblue;
-    stroke: black;
-}
-
-text.temp {
-    fill: red;
-    stroke: red;
-    color: red;
-}
-
-text.precip {
-    fill: dodgerblue;
-    stroke: dodgerblue;
 }
 
 path.gsl {
     fill: none;
-    stroke: black;
-    stroke-width: 3;
+    stroke: #d8d8d8;
+    stroke-width: 5;
 }
+
+g.temp {
+    stroke: #f3b7b7;
+    color: #f3b7b7;
+    letter-spacing: 1.25px;
+}
+
+g.precip {
+    stroke: #a1d3f5;
+    color: #a1d3f5;
+    letter-spacing: 1.25px;
+}
+
+g.x-axis {
+    color: #d8d8d8;
+    stroke: #d8d8d8;
+    letter-spacing: 2.5px;
+}
+
+text.temp {
+    fill: #f3b7b7;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+text.precip {
+    fill: #a1d3f5;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+text.x-axis {
+    fill: #d8d8d8;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+
 

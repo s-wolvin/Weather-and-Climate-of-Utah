@@ -6,10 +6,16 @@ function createMap () {
     const map = mapSVG.append("g");
     const scatter = mapSVG.append("g").attr("id", "station-scatter");
   
-    let projection = d3.geoConicEqualArea()
-      .rotate([110,0])
-      .translate([340,1025])
-      .scale(6000)
+    let projection = d3.geoConicConformal()
+      .center([-111, 39])
+      .rotate([111,0])
+      .translate([-7730,-3850])
+      .scale(6200)
+ 
+    //let projection = d3.geoConicEqualArea()
+    //  .rotate([110,0])
+    //  .translate([340,1025])
+    //  .scale(6000)
   
     const generator = d3.geoPath().projection(projection);  
   
@@ -21,9 +27,9 @@ function createMap () {
         .data(data.features)
         .join("path")
         .attr("d", generator)
-        .attr('stroke', '#9e6015')
+        .attr('stroke', '#2b2b2b')
         .attr('stroke-width', 2)
-        .attr('fill', '#ffe0b4');
+        .attr('fill', '#a59ab0');
   
     });
   
@@ -41,8 +47,8 @@ function createMap () {
         scatter.append('text')
           .text(globalAtmos.metadata.filter((d) => {return d.NAME === event.target.__data__.NAME})[0].HEADER)
           .style("fill", "black")
-          .attr("x", projection([+event.target.__data__.LONGITUDE, +event.target.__data__.LATITUDE+0.1])[0])
-          .attr("y", projection([+event.target.__data__.LONGITUDE, +event.target.__data__.LATITUDE+0.1])[1])
+          .attr("x", projection([+event.target.__data__.LONGITUDE, +event.target.__data__.LATITUDE+0.15])[0])
+          .attr("y", projection([+event.target.__data__.LONGITUDE, +event.target.__data__.LATITUDE+0.15])[1])
           .style("text-anchor", "middle");
   
           d3.select(event.target).attr("r", 10);
@@ -108,15 +114,16 @@ function createMap () {
     svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, ${(CLIMO_HEIGHT - MARGIN.bottom)})`)
       .call(d3.axisBottom(xScale))
-      .attr("id", "x-axis-monthly");
+      .attr("id", "x-axis-monthly")
+      .attr("class", "x-axis");
   
     d3.select("#x-axis-monthly").append("text")
       .attr("x", (CLIMO_WIDTH-MARGIN.left)/2)
       .attr("y", 50)
       .style("text-anchor", "middle")
-      .style("fill", "black")
       .style("font-size", "20px")
-      .text("Months");
+      .text("Months")
+      .attr("class", "x-axis");
   
     // y-axis //
     let yScalePr = d3.scaleLinear()
@@ -131,7 +138,6 @@ function createMap () {
   
     d3.select("#y-axis-monthly-pr").append("text")
       .style("text-anchor", "middle")
-      .style("fill", "black")
       .style("font-size", "20px")
       .attr("transform", "rotate(-90)")
       .attr("x", -(CLIMO_HEIGHT)/2)
@@ -151,7 +157,6 @@ function createMap () {
   
     d3.select("#y-axis-monthly-t").append("text")
       .style("text-anchor", "middle")
-      .style("fill", "black")
       .style("font-size", "20px")
       .attr("transform", "rotate(90)")
       .attr("x", (CLIMO_HEIGHT)/2)
@@ -171,7 +176,9 @@ function createMap () {
       .attr("y", function(d) { return yScalePr(+d.value) + MARGIN.top; })
       .attr("width", xScale.bandwidth())
       .attr("height", function(d) { return CLIMO_HEIGHT - yScalePr(+d.value) - MARGIN.top; })
-      .attr("class", "precip");
+      .attr("class", "precip")
+      .on('mouseover', function() { this.classList.add('hover') })
+      .on('mouseout', function() { this.classList.remove('hover')});
   
     // line and scatter chart //
     chart.append("path")
@@ -188,7 +195,9 @@ function createMap () {
       .attr("cx", function(d) { return xScale(d.month) + xScale.bandwidth()/2; })
       .attr("cy", function(d) { return yScaleT(d.value); })
       .attr("r", 8)
-      .attr("class", "temp");
+      .attr("class", "temp")
+      .on('mouseover', function() { this.classList.add('hover') })
+      .on('mouseout', function() { this.classList.remove('hover')});
   
   
   
@@ -204,16 +213,17 @@ function createMap () {
   
     svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, ${(CLIMO_HEIGHT - MARGIN.bottom)})`)
-      .call(d3.axisBottom(xScale).tickValues(xScale.domain().filter(function(d,i){ return !(i%2)})))
-      .attr("id", "x-axis-yearly");
+      .call(d3.axisBottom(xScale).tickValues(xScale.domain().filter(function(d,i){ return !(i%3)})))
+      .attr("id", "x-axis-yearly")
+      .attr("class", "x-axis");
   
     d3.select("#x-axis-yearly").append("text")
       .attr("x", (CLIMO_WIDTH-MARGIN.left)/2)
       .attr("y", 50)
       .style("text-anchor", "middle")
-      .style("fill", "black")
       .style("font-size", "20px")
-      .text("Years");
+      .text("Years")
+      .attr("class", "x-axis");
   
       // y-axis //
     yScalePr = d3.scaleLinear()
@@ -228,7 +238,6 @@ function createMap () {
   
     d3.select("#y-axis-yearly-pr").append("text")
       .style("text-anchor", "middle")
-      .style("fill", "black")
       .style("font-size", "20px")
       .attr("transform", "rotate(-90)")
       .attr("x", -(CLIMO_HEIGHT)/2)
@@ -248,7 +257,6 @@ function createMap () {
   
     d3.select("#y-axis-yearly-t").append("text")
       .style("text-anchor", "middle")
-      .style("fill", "black")
       .style("font-size", "20px")
       .attr("transform", "rotate(90)")
       .attr("x", (CLIMO_HEIGHT)/2)
@@ -268,7 +276,9 @@ function createMap () {
       .attr("y", function(d) { return yScalePr(+d.value) + MARGIN.top; })
       .attr("width", xScale.bandwidth())
       .attr("height", function(d) { return CLIMO_HEIGHT - yScalePr(+d.value) - MARGIN.top; })
-      .attr("class", "precip");
+      .attr("class", "precip")
+      .on('mouseover', function() { this.classList.add('hover') })
+      .on('mouseout', function() { this.classList.remove('hover')});
   
     chart.append("path")
       .datum(tYearly)
@@ -284,6 +294,8 @@ function createMap () {
       .attr("cx", function(d) { return xScale(d.year) + xScale.bandwidth()/2; })
       .attr("cy", function(d) { return yScaleT(d.value); })
       .attr("r", 8)
-      .attr("class", "temp");
+      .attr("class", "temp")
+      .on('mouseover', function() { this.classList.add('hover') })
+      .on('mouseout', function() { this.classList.remove('hover')});
   
   }

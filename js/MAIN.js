@@ -2,15 +2,15 @@
 const CHART_WIDTH = 500;
 const CHART_HEIGHT = 500;
 
-const MAP_WIDTH = 400;
+const MAP_WIDTH = 450;
 const MAP_HEIGHT = 600;
 const CLIMO_WIDTH = MAP_WIDTH*2;
 const CLIMO_HEIGHT = MAP_HEIGHT/2;
 
-const NHWR_WIDTH = 700;
-const NHWR_HEIGHT = 400;
+const NHWR_WIDTH = 1100;
+const NHWR_HEIGHT = 500;
 
-const MARGIN = { left: 60, bottom: 20, top: 20, right: 20 };
+const MARGIN = { left: 65, bottom: 20, top: 20, right: 30 };
 const ANIMATION_DUATION = 300;
 const WIDTH = CHART_WIDTH - MARGIN.left - MARGIN.right
 const HEIGHT = CHART_HEIGHT - MARGIN.top - MARGIN.bottom
