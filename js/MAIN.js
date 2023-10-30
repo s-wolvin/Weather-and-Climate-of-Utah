@@ -77,13 +77,13 @@ loadData().then((loadedData) => {
 
   d3.select('#wf-temp-div')
     .append('svg')
-    .attr('width', "100%")
+    .attr('width', '100%')
     .attr('height', NHWR_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'wf-temp-svg');
 
   d3.select('#gsl-precip-div')
     .append('svg')
-    .attr('width', "100%")
+    .attr('width', '100%')
     .attr('height', NHWR_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'gsl-precip-svg');
 
@@ -101,6 +101,12 @@ loadData().then((loadedData) => {
   // add listeners for any changes in the orographic gradient button
   const datatype = document.getElementById('dtype');
   datatype.addEventListener('change', changeOG);
+
+  // add listener for resizing window
+  window.addEventListener('resize', function() {
+    plotWildfire(); // plot wildfire data
+    plotGSL(); // plot great salt lake data
+  });
 });
 
 

@@ -29,7 +29,7 @@ function createMap () {
         .attr("d", generator)
         .attr('stroke', '#2b2b2b')
         .attr('stroke-width', 2)
-        .attr('fill', '#a59ab0');
+        .attr('fill', '#bcafc9');
   
     });
   
@@ -44,17 +44,56 @@ function createMap () {
       .attr('id', d => {return d.NAME; })
       .on('click', d => {updateStationClimo(d.target.id); })
       .on('mouseover', function(event) {
-        scatter.append('text')
-          .text(globalAtmos.metadata.filter((d) => {return d.NAME === event.target.__data__.NAME})[0].HEADER)
-          .style("fill", "black")
-          .attr("x", projection([+event.target.__data__.LONGITUDE, +event.target.__data__.LATITUDE+0.15])[0])
-          .attr("y", projection([+event.target.__data__.LONGITUDE, +event.target.__data__.LATITUDE+0.15])[1])
-          .style("text-anchor", "middle");
+
+        let name = globalAtmos.metadata.filter((d) => {return d.NAME === event.target.__data__.NAME})[0].HEADER;
+
+        // add text to teh dots, postiton based on location on map to prevent the name from being cut off
+        if (event.target.__data__.LONGITUDE > -111.0937) {
+          let box = scatter.append('rect')
+            .attr("rx", 5)
+            .attr("ry", 5);
+
+          let tt = scatter.append('text')
+            .text(name)
+            .attr("x", projection([+event.target.__data__.LONGITUDE-(name.length/50), +event.target.__data__.LATITUDE+0.17])[0])
+            .attr("y", projection([+event.target.__data__.LONGITUDE-(name.length/50), +event.target.__data__.LATITUDE+0.17])[1])
+            .style("text-anchor", "middle")
+            .attr('id', 'label-text');
+
+          box.attr('width', tt.node().getBBox().width+14)
+            .attr('height', tt.node().getBBox().height+4)
+            .attr('x', tt.node().getBBox().x-7)
+            .attr('y', tt.node().getBBox().y-2)
+            .attr('id', 'label-rect');
+
+
+          
+        } else {
+          let box = scatter.append('rect')
+            .attr("rx", 5)
+            .attr("ry", 5);
+
+          let tt = scatter.append('text')
+            .text(globalAtmos.metadata.filter((d) => {return d.NAME === event.target.__data__.NAME})[0].HEADER)
+            .attr("x", projection([+event.target.__data__.LONGITUDE+(name.length/50), +event.target.__data__.LATITUDE+0.17])[0])
+            .attr("y", projection([+event.target.__data__.LONGITUDE+(name.length/50), +event.target.__data__.LATITUDE+0.17])[1])
+            .style("text-anchor", "middle")
+            .attr('id', 'label-text');
+
+          box.attr('width', tt.node().getBBox().width+14)
+            .attr('height', tt.node().getBBox().height+4)
+            .attr('x', tt.node().getBBox().x-7)
+            .attr('y', tt.node().getBBox().y-2)
+            .attr('id', 'label-rect');
+        }
   
-          d3.select(event.target).attr("r", 10);
+        d3.select(event.target).attr("r", 10);
+
+
       }) // increases size during hover
       .on('mouseout', d => {
-        scatter.selectAll('text').remove();
+        scatter.select('#label-text').remove();
+        scatter.select('#label-rect').remove();
         
         d3.select(d.target).attr("r", 6)
       }); // decreases size after hover
@@ -165,10 +204,10 @@ function createMap () {
       .attr("class", "temp");
   
     // bar chart //
-    let chart = svg.append('g')
+    let chart_monthly = svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, -${MARGIN.bottom})`);
   
-    chart.selectAll("rect")
+      chart_monthly.selectAll("rect")
       .data(pMonthly)
       .enter()
       .append("rect")
@@ -177,24 +216,48 @@ function createMap () {
       .attr("width", xScale.bandwidth())
       .attr("height", function(d) { return CLIMO_HEIGHT - yScalePr(+d.value) - MARGIN.top; })
       .attr("class", "precip")
-      .on('mouseover', function() { this.classList.add('hover') })
-      .on('mouseout', function() { this.classList.remove('hover')});
+      .on('mouseover', function(event) { 
+        this.classList.add('hover')
+      
+        let box = chart_monthly.append('rect')
+          .attr('rx', 5)
+          .attr('ry', 5)
+
+        let tt = chart_monthly.append('text')
+            .text(`${event.target.__data__.value} mm?`)
+            .attr("x", xScale(event.target.__data__.month))
+            .attr("y", yScalePr(event.target.__data__.value))
+            .style("text-anchor", "start")
+            .attr('id', 'label-text');
+
+        box.attr('width', tt.node().getBBox().width+14)
+            .attr('height', tt.node().getBBox().height+4)
+            .attr('x', tt.node().getBBox().x-7)
+            .attr('y', tt.node().getBBox().y-2)
+            .attr('id', 'label-rect');
+      })
+      .on('mouseout', function() { 
+        this.classList.remove('hover');
+
+        chart_monthly.select('#label-text').remove();
+        chart_monthly.select('#label-rect').remove();
+      });
   
     // line and scatter chart //
-    chart.append("path")
+    chart_monthly.append("path")
       .datum(tMonthly)
       .attr("d", d3.line()
         .x(function(d) { return xScale(d.month) + xScale.bandwidth()/2; })
         .y(function(d) { return yScaleT(d.value); }))
       .attr('class', 'temp');
   
-    chart.selectAll("circle")
+    chart_monthly.selectAll("circle")
       .data(tMonthly)
       .enter()
       .append("circle")
       .attr("cx", function(d) { return xScale(d.month) + xScale.bandwidth()/2; })
       .attr("cy", function(d) { return yScaleT(d.value); })
-      .attr("r", 8)
+      .attr("r", 10)
       .attr("class", "temp")
       .on('mouseover', function() { this.classList.add('hover') })
       .on('mouseout', function() { this.classList.remove('hover')});
@@ -265,10 +328,10 @@ function createMap () {
       .attr("class", "temp");
   
     // bar chart
-    chart = svg.append('g')
+    chart_yearly = svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, -${MARGIN.bottom})`);
   
-    chart.selectAll("rect")
+    chart_yearly.selectAll("rect")
       .data(pYearly)
       .enter()
       .append("rect")
@@ -277,17 +340,41 @@ function createMap () {
       .attr("width", xScale.bandwidth())
       .attr("height", function(d) { return CLIMO_HEIGHT - yScalePr(+d.value) - MARGIN.top; })
       .attr("class", "precip")
-      .on('mouseover', function() { this.classList.add('hover') })
-      .on('mouseout', function() { this.classList.remove('hover')});
+      .on('mouseover', function(event) { 
+        this.classList.add('hover');
+      
+        let box = chart_yearly.append('rect')
+          .attr('rx', 5)
+          .attr('ry', 5)
+
+        let tt = chart_yearly.append('text')
+            .text(`${event.target.__data__.value} mm?`)
+            .attr("x", xScale(event.target.__data__.month))
+            .attr("y", yScalePr(event.target.__data__.value))
+            .style("text-anchor", "start")
+            .attr('id', 'label-text');
+
+        box.attr('width', tt.node().getBBox().width+14)
+            .attr('height', tt.node().getBBox().height+4)
+            .attr('x', tt.node().getBBox().x-7)
+            .attr('y', tt.node().getBBox().y-2)
+            .attr('id', 'label-rect');
+          })
+      .on('mouseout', function() { 
+        this.classList.remove('hover');
+      
+        chart_yearly.select('#label-text').remove();
+        chart_yearly.select('#label-rect').remove();
+      });
   
-    chart.append("path")
+    chart_yearly.append("path")
       .datum(tYearly)
       .attr("d", d3.line()
         .x(function(d) { return xScale(d.year) + xScale.bandwidth()/2; })
         .y(function(d) { return yScaleT(d.value); }))
       .attr("class", "temp");
   
-    chart.selectAll("circle")
+    chart_yearly.selectAll("circle")
       .data(tYearly)
       .enter()
       .append("circle")

@@ -1,25 +1,25 @@
 body {
-    background-color: #383533;
+    background-color: #292725;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 h1 {
     text-align: left;
     font-size: 50px;
-    color: #dfe8e9;
+    color: #d8d8d8;
 }
 
 h2 {
     text-align: center;
     font-size: 30px;
-    color: #dfe8e9;
+    color: #d8d8d8;
 }
 
 h3 {
     text-align: center;
     font-size: 25px;
     font-style: italic;
-    color: #dfe8e9;
+    color: #d8d8d8;
 }
 
 #banner {
@@ -100,6 +100,12 @@ path.gsl {
     stroke-width: 5;
 }
 
+line.gsl {
+    fill: none;
+    stroke: #d8d8d8;
+    stroke-width: 5;
+}
+
 g.temp {
     stroke: #f3b7b7;
     color: #f3b7b7;
@@ -133,5 +139,17 @@ text.x-axis {
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+text#label-text {
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    fill: #292725;
+    font-weight: bold;
+
+}
+
+rect#label-rect {
+    fill:#d8d8d8;
+    stroke: #292725;
+    
+}
 
 
