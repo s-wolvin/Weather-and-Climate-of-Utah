@@ -103,10 +103,10 @@ loadData().then((loadedData) => {
   datatype.addEventListener('change', changeOG);
 
   // add listener for resizing window
-  window.addEventListener('resize', function() {
-    plotWildfire(); // plot wildfire data
-    plotGSL(); // plot great salt lake data
-  });
+  //window.addEventListener('resize', function() {
+  //  plotWildfire(); // plot wildfire data
+  //  plotGSL(); // plot great salt lake data
+  //});
 });
 
 

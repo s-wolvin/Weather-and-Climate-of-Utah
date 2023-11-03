@@ -181,7 +181,7 @@ function createMap () {
       .attr("transform", "rotate(-90)")
       .attr("x", -(CLIMO_HEIGHT)/2)
       .attr("y", -MARGIN.left/1.5)
-      .text("Total Precipitation (mm)")
+      .text("Total Precipitation (inch)")
       .attr("class", "precip");
   
     let yScaleT = d3.scaleLinear()
@@ -200,7 +200,7 @@ function createMap () {
       .attr("transform", "rotate(90)")
       .attr("x", (CLIMO_HEIGHT)/2)
       .attr("y", -MARGIN.left/1.5)
-      .text("Average Temperature (F)")
+      .text("Average Temperature (°F)")
       .attr("class", "temp");
   
     // bar chart //
@@ -224,7 +224,7 @@ function createMap () {
           .attr('ry', 5)
 
         let tt = chart_monthly.append('text')
-            .text(`${event.target.__data__.value} mm?`)
+            .text(`${event.target.__data__.value} inch`)
             .attr("x", xScale(event.target.__data__.month))
             .attr("y", yScalePr(event.target.__data__.value))
             .style("text-anchor", "start")
@@ -305,7 +305,7 @@ function createMap () {
       .attr("transform", "rotate(-90)")
       .attr("x", -(CLIMO_HEIGHT)/2)
       .attr("y", -MARGIN.left/1.5)
-      .text("Total Precipitation (mm)")
+      .text("Total Precipitation (inch)")
       .attr("class", "precip");
   
     yScaleT = d3.scaleLinear()
@@ -324,7 +324,7 @@ function createMap () {
       .attr("transform", "rotate(90)")
       .attr("x", (CLIMO_HEIGHT)/2)
       .attr("y", -MARGIN.left/1.5)
-      .text("Average Temperature (F)")
+      .text("Average Temperature (°F)")
       .attr("class", "temp");
   
     // bar chart
@@ -348,7 +348,7 @@ function createMap () {
           .attr('ry', 5)
 
         let tt = chart_yearly.append('text')
-            .text(`${event.target.__data__.value} mm?`)
+            .text(`${event.target.__data__.value} inch`)
             .attr("x", xScale(event.target.__data__.month))
             .attr("y", yScalePr(event.target.__data__.value))
             .style("text-anchor", "start")
