@@ -21,8 +21,6 @@ function plotWildfire() {
         }
     });
 
-
-    console.log(dataset)
     // PLOT //
     const svg = d3.select("#wf-temp-svg");
 
@@ -115,6 +113,18 @@ function plotWildfire() {
 
 }
 
+function orgCoolSsn (data) {
+    const dateNames = ["Nov 2007", "Nov 2008", "Nov 2009", "Nov 2010", "Nov 2011", "Nov 2012", 
+        "Nov 2013", "Nov 2014", "Nov 2015", "Nov 2016", "Nov 2017",
+        "Nov 2018", "Nov 2019", "Nov 2020", "Nov 2021"];
+    const dataset = [];
+    
+    for (i=0; i < dateNames.length; i++) {
+      dataset.push({date: dateNames[i], value: +data[0][dateNames[i]]});
+    }
+  
+    return dataset
+  }
 
 
 // plot great salt lake data
@@ -123,23 +133,15 @@ function plotGSL() {
     // const nhwr_width = d3.select("#gsl-precip-svg").node().getBoundingClientRect().width;
     const nhwr_width = NHWR_WIDTH;
 
-
-    const yearNames = ['1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2003', 
-    '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017',
-    '2018', '2019', '2020', '2021', '2022'];
-
+    const drainage_mean = orgCoolSsn(globalAtmos.pCoolSsn.filter((d) => {return d.NAME === 'DRAINAGE_MEAN'}));
     // pull dates
     let gsl_water = hazards_resources.gsl_water_level;
     gsl_water.forEach(function(d) {
         d.date = d3.timeFormat("%b %Y")(new Date(d.year, d.month-1, 1));
     });
 
-    console.log(gsl_water)
-
     // PLOT //
     let svg = d3.select("#gsl-precip-svg");
-
-    console.log(svg)
 
     // x-axis //
     const xScale = d3.scalePoint()
@@ -163,7 +165,7 @@ function plotGSL() {
     // y-axis //
     const yScale = d3.scaleLinear()
       .range([NHWR_HEIGHT-MARGIN.bottom, MARGIN.top])
-      .domain([d3.min(gsl_water.map((d) => +d.elev))*0.9998, d3.max(gsl_water.map((d) => +d.elev))*1.0002]);
+      .domain([d3.min(gsl_water.map((d) => +d.elev))*0.999, d3.max(gsl_water.map((d) => +d.elev))*1.001]);
   
     svg.append('g')
       .attr('transform', `translate(${nhwr_width-(MARGIN.right*3)}, 0)`)
@@ -179,10 +181,50 @@ function plotGSL() {
       .attr("y", MARGIN.left/0.75)
       .text("Water Elevation (meters)")
       .attr('class', 'x-axis');
+
+    
+    const yScaleCool = d3.scaleLinear()
+      .range([NHWR_HEIGHT-MARGIN.bottom, MARGIN.top])
+      .domain([0, d3.max(drainage_mean.map((d) => +d.value))*1.2]);
+
+    svg.append('g')
+      .attr('transform', `translate(${MARGIN.left}, 0)`)
+      .call(d3.axisLeft(yScaleCool).ticks(5))
+      .attr("id", "y-axis-cool-pr")
+      .attr("class", "precip");
+
+    d3.select("#y-axis-cool-pr").append("text")
+      .style("text-anchor", "middle")
+      .style("font-size", "20px")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -(NHWR_HEIGHT)/2)
+      .attr("y", -MARGIN.left/1.5)
+      .text("Average Drainage Precipitation (inch)")
+      .attr("class", "precip");
   
     // svg
     let chart = svg.append('g')
         .attr('transform', `translate(${MARGIN.left}, 0)`);
+
+    const width = xScale("May 2015") - xScale("Nov 2014");
+
+    // Bar chart //
+    chart.selectAll("rect")
+        .data(drainage_mean)
+        .enter()
+        .append("rect")
+        .attr("x", function(d) { return xScale(d.date); })
+        .attr("y", function(d) { return yScaleCool(+d.value); })
+        .attr("width", width)
+        .attr("height", function(d) { return NHWR_HEIGHT - yScaleCool(+d.value) - MARGIN.top; })
+        .attr("class", "precip")
+        .attr('id', function (d) { return d3.timeFormat("%b%Y")(new Date(d.date))})
+        .on('mouseover', function(event) {
+            this.classList.add('hover')
+        })
+        .on('mouseout', function(event) {
+            this.classList.remove('hover')
+        }); // cant seem to get this to work, color change when hovering over rects
 
     // line and scatter chart //
     chart.append("path")
@@ -197,8 +239,8 @@ function plotGSL() {
     const vertGroup = svg.append('g')
     
     vertGroup.append('line')
-        .attr('x1', MARGIN.left)
-        .attr('x2', MARGIN.left)
+        .attr('x1', NHWR_WIDTH-(MARGIN.right*3))
+        .attr('x2', NHWR_WIDTH-(MARGIN.right*3))
         .attr('y1', MARGIN.top)
         .attr('y2', CHART_HEIGHT-MARGIN.bottom)
         .attr('class', 'gsl')
@@ -209,10 +251,27 @@ function plotGSL() {
         .attr('y', MARGIN.top*2)
         .attr('fill', '#d8d8d8')
         .style('font-size', '25px')
-        .attr('id', 'vert-line-text');
+        .attr('id', 'vert-line-gsl');
+
+    vertGroup.append('text')
+        .attr('x', MARGIN.left)
+        .attr('y', MARGIN.top*2)
+        .attr('fill', '#d8d8d8')
+        .style('font-size', '25px')
+        .attr('id', 'vert-line-date');
+
+    vertGroup.append('text')
+        .attr('x', MARGIN.left)
+        .attr('y', MARGIN.top*2)
+        .attr('fill', '#d8d8d8')
+        .style('font-size', '25px')
+        .attr('id', 'vert-line-pr')
+        .attr('class', 'precip');
 
     // formatting for text
     const format = d3.format(".5");
+    const monthsF = ['Nov', 'Dec'];
+    const monthsS = ['Jan', 'Feb', 'Mar', 'Apr'];
 
     d3.select("#gsl-precip-svg").on('mousemove', function (event) {
         let [xPos, yPos] = d3.pointer(event); // find mouse location
@@ -228,29 +287,76 @@ function plotGSL() {
             let rangePoints = d3.range(range[0], range[1], xScale.step());
 
             // get correspoinding time
-            let xDate = domain[d3.bisect(rangePoints, xPos-MARGIN.left)];
+            let xDate = domain[d3.bisect(rangePoints, xPos-MARGIN.left-3)];
 
             // filter to find date
             const dateData = gsl_water.filter((d) => {return d.date === xDate;})
 
             // plot text
             if (xPos < (nhwr_width)/2) {
-                d3.select('#vert-line-text')
+                d3.select('#vert-line-gsl')
                     .text(`${format(dateData[0].elev)} m`)
+                    .attr('x', xPos+15)
+                    .attr('y', 70)
+                    .attr('text-anchor', 'start')
+                    .attr('class', 'gsl');
+
+                d3.select('#vert-line-date')
+                    .text(`${xDate}`)
                     .attr('x', xPos+15)
                     .attr('y', 40)
                     .attr('text-anchor', 'start');
+
+                d3.select('#vert-line-pr')
+                    .attr('x', xPos+15)
+                    .attr('y', 100)
+                    .attr('text-anchor', 'start');
+
             } else {
-                d3.select('#vert-line-text')
+                d3.select('#vert-line-gsl')
                     .text(`${format(dateData[0].elev)} m`)
+                    .attr('x', xPos-15)
+                    .attr('y', 70)
+                    .attr('text-anchor', 'end')
+                    .attr('class', 'gsl');
+
+                d3.select('#vert-line-date')
+                    .text(`${xDate}`)
                     .attr('x', xPos-15)
                     .attr('y', 40)
                     .attr('text-anchor', 'end');
+
+                d3.select('#vert-line-pr')
+                    .attr('x', xPos-15)
+                    .attr('y', 100)
+                    .attr('text-anchor', 'end');
+            }
+
+            if (monthsF.includes(xDate.slice(0,3)) && xDate.slice(4,8) !== '2022') {
+
+                const line_water_level = drainage_mean.filter((d) => {
+                        return d3.timeFormat("%b %Y")(new Date(d.date)) === `Nov ${xDate.slice(4,8)}`
+                    })
+
+                d3.select('#vert-line-pr')
+                    .text(`${d3.format('.2f')(line_water_level[0].value)} inch`);
+
+            } else if (monthsS.includes(xDate.slice(0,3)) && xDate.slice(4,8) !== '2023') {
+                const line_water_level = drainage_mean.filter((d) => {
+                    return d3.timeFormat("%b %Y")(new Date(d.date)) === `Nov ${xDate.slice(4,8)-1}`
+                    });
+
+                d3.select('#vert-line-pr')
+                    .text(`${d3.format('.2f')(line_water_level[0].value)} inch`);
+
+            } else {
+                d3.select('#vert-line-pr')
+                    .text("")
             }
 
         }
+
+
     })
-
-
 
 }
