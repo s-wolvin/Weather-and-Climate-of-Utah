@@ -109,13 +109,13 @@ line.gsl {
 g.temp {
     stroke: #f3b7b7;
     color: #f3b7b7;
-    letter-spacing: 1.25px;
+    letter-spacing: 2px;
 }
 
 g.precip {
     stroke: #a1d3f5;
     color: #a1d3f5;
-    letter-spacing: 1.25px;
+    letter-spacing: 2px;
 }
 
 g.x-axis {

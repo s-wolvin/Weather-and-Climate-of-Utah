@@ -16,7 +16,7 @@ function plotWildfire() {
 
         if (wf_year.length !== 0) {
             dataset.push({year: year, 
-                mTemp: d3.mean(globalAtmos.tYearly.map((d) => {return d[year];})), 
+                mTemp: d3.mean(globalAtmos.tWarmSsn.map((d) => {return d[year];})), 
                 acres: wf_year[0].gisacres})
         }
     });
@@ -63,12 +63,12 @@ function plotWildfire() {
       .attr("transform", "rotate(-90)")
       .attr("x", -(NHWR_HEIGHT)/2)
       .attr("y", -MARGIN.left/1.5)
-      .text("Yearly Average Temperature (?)")
+      .text("Yearly Average Summertime Temperature (°F)")
       .attr("class", "temp");
 
     // circle radius scale //
     const rScale = d3.scaleLinear()
-        .range([5, 40])
+        .range([5, 45])
         .domain([d3.min(dataset.map((d) => +d.acres)), d3.max(dataset.map((d) => +d.acres))])
 
     // scatter chart
@@ -95,9 +95,9 @@ function plotWildfire() {
 
             let tt = chart.append('text')
                 .text(format(event.target.__data__.acres) + " Acres")
-                .attr("x", xScale(event.target.__data__.year)-10)
-                .attr("y", yScale(event.target.__data__.mTemp+((+this.getAttribute('r')+20)/100)))
-                .style("text-anchor", "start")
+                .attr("x", xScale(event.target.__data__.year)+20)
+                .attr("y", yScale(event.target.__data__.mTemp+((+this.getAttribute('r')+20)/60)))
+                .style("text-anchor", "middle")
                 .attr('id', 'label-text');
 
             box.attr('width', tt.node().getBBox().width+14)

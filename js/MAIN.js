@@ -21,11 +21,14 @@ async function loadData () {
   const tMonthly = await d3.csv('data/temp_monthly.csv');
   const pMonthly = await d3.csv('data/precip_monthly.csv');
   const tYearly = await d3.csv('data/temp_yearly.csv');
-  const pYearly = await d3.csv('data/precip_yearly.csv');
+  const pYearly = await d3.csv('data/precip_yearly_sum.csv');
+  const pCoolSsn = await d3.csv('data/station_cool_season_PRCP.csv');
+  const tWarmSsn = await d3.csv('data/station_warm_season_TAVG.csv');
 
   const gsl_water_level = await d3.csv('data/GSL_monthly_water_elev');
   const wildfire_acres = await d3.csv('data/utah_wildfire_yearly_acres')
-  return { metadata, tMonthly, pMonthly, tYearly, pYearly, gsl_water_level, wildfire_acres };
+  return { metadata, tMonthly, pMonthly, tYearly, pYearly, pCoolSsn, tWarmSsn,
+    gsl_water_level, wildfire_acres };
 }
 
 
@@ -36,6 +39,8 @@ const globalAtmos = {
   pMonthly: null,
   tYearly: null,
   pYearly: null,
+  pCoolSsn: null,
+  tWarmSsn: null,
 };
 
 const hazards_resources = {
@@ -51,6 +56,8 @@ loadData().then((loadedData) => {
   globalAtmos.pMonthly = loadedData.pMonthly;
   globalAtmos.tYearly = loadedData.tYearly;
   globalAtmos.pYearly = loadedData.pYearly;
+  globalAtmos.pCoolSsn = loadedData.pCoolSsn;
+  globalAtmos.tWarmSsn = loadedData.tWarmSsn;
 
   hazards_resources.gsl_water_level = loadedData.gsl_water_level;
   hazards_resources.wildfire_acres = loadedData.wildfire_acres;
