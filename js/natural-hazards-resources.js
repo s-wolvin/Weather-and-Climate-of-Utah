@@ -218,13 +218,7 @@ function plotGSL() {
         .attr("width", width)
         .attr("height", function(d) { return NHWR_HEIGHT - yScaleCool(+d.value) - MARGIN.top; })
         .attr("class", "precip")
-        .attr('id', function (d) { return d3.timeFormat("%b%Y")(new Date(d.date))})
-        .on('mouseover', function(event) {
-            this.classList.add('hover')
-        })
-        .on('mouseout', function(event) {
-            this.classList.remove('hover')
-        }); // cant seem to get this to work, color change when hovering over rects
+        .attr('id', function (d) { return d3.timeFormat("%b%Y")(new Date(d.date))}); 
 
     // line and scatter chart //
     chart.append("path")
@@ -243,7 +237,8 @@ function plotGSL() {
         .attr('x2', NHWR_WIDTH-(MARGIN.right*3))
         .attr('y1', MARGIN.top)
         .attr('y2', CHART_HEIGHT-MARGIN.bottom)
-        .attr('class', 'gsl')
+        .style("stroke", "#d8d8d8")
+        .style("stroke-width", 3)
         .attr('id', 'vert-line');
 
     vertGroup.append('text')
