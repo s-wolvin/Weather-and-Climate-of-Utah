@@ -45,7 +45,14 @@ function createMap () {
       .on('click', d => {updateStationClimo(d.target.id); })
       .on('mouseover', function(event) {
 
-        let name = globalAtmos.metadata.filter((d) => {return d.NAME === event.target.__data__.NAME})[0].HEADER;
+        let data = globalAtmos.metadata.filter((d) => d.NAME === event.target.__data__.NAME)[0];
+        let name = data.HEADER;
+        let latlon = `${(+data.LATITUDE).toFixed(2)}°N, ${(+data.LONGITUDE).toFixed(2)}°W`;
+        let elevation = `Elevation: ${Math.round(data.ELEVATION)} meters`;
+        let combinedText = `${name}\n${latlon}\n${elevation}`;
+
+        let xOffset = name.length / 50;
+        let yOffset = 0.5;
 
         // add text to teh dots, postiton based on location on map to prevent the name from being cut off
         if (event.target.__data__.LONGITUDE > -111.0937) {
@@ -54,20 +61,28 @@ function createMap () {
             .attr("ry", 5);
 
           let tt = scatter.append('text')
-            .text(name)
-            .attr("x", projection([+event.target.__data__.LONGITUDE-(name.length/50), +event.target.__data__.LATITUDE+0.17])[0])
-            .attr("y", projection([+event.target.__data__.LONGITUDE-(name.length/50), +event.target.__data__.LATITUDE+0.17])[1])
-            .style("text-anchor", "middle")
-            .attr('id', 'label-text');
+          //.text(combinedText)
+          .attr("x", projection([+event.target.__data__.LONGITUDE - xOffset, +event.target.__data__.LATITUDE + yOffset])[0])
+          .attr("y", projection([+event.target.__data__.LONGITUDE - xOffset, +event.target.__data__.LATITUDE + yOffset])[1])
+          .style("text-anchor", "middle")
+          .attr('id', 'label-text')
+          // Adjust the vertical position to center the text
 
-          box.attr('width', tt.node().getBBox().width+14)
-            .attr('height', tt.node().getBBox().height+4)
-            .attr('x', tt.node().getBBox().x-7)
-            .attr('y', tt.node().getBBox().y-2)
+          const lines = combinedText.split('\n');
+          tt.selectAll('tspan')
+            .data(lines)
+            .enter()
+            .append('tspan')
+            .text(d => d)
+            .attr('x', tt.attr('x'))
+            .attr('dy', (d, i) => i === 0 ? '0' : '1.1em');
+      
+          box.attr('width', tt.node().getBBox().width + 14)
+            .attr('height', tt.node().getBBox().height + 4)
+            .attr('x', tt.node().getBBox().x - 7)
+            .attr('y', tt.node().getBBox().y - 3)
             .attr('id', 'label-rect');
 
-
-          
         } else {
           let box = scatter.append('rect')
             .attr("rx", 5)
@@ -75,15 +90,24 @@ function createMap () {
 
           let tt = scatter.append('text')
             .text(globalAtmos.metadata.filter((d) => {return d.NAME === event.target.__data__.NAME})[0].HEADER)
-            .attr("x", projection([+event.target.__data__.LONGITUDE+(name.length/50), +event.target.__data__.LATITUDE+0.17])[0])
-            .attr("y", projection([+event.target.__data__.LONGITUDE+(name.length/50), +event.target.__data__.LATITUDE+0.17])[1])
+            .attr("x", projection([+event.target.__data__.LONGITUDE+(name.length/50), +event.target.__data__.LATITUDE+yOffset])[0])
+            .attr("y", projection([+event.target.__data__.LONGITUDE+(name.length/50), +event.target.__data__.LATITUDE+yOffset])[1])
             .style("text-anchor", "middle")
             .attr('id', 'label-text');
+
+          const lines = combinedText.split('\n');
+          tt.selectAll('tspan')
+            .data(lines)
+            .enter()
+            .append('tspan')
+            .text(d => d)
+            .attr('x', tt.attr('x'))
+            .attr('dy', (d, i) => i === 0 ? '0' : '1.1em');
 
           box.attr('width', tt.node().getBBox().width+14)
             .attr('height', tt.node().getBBox().height+4)
             .attr('x', tt.node().getBBox().x-7)
-            .attr('y', tt.node().getBBox().y-2)
+            .attr('y', tt.node().getBBox().y-3)
             .attr('id', 'label-rect');
         }
   
