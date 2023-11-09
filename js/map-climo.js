@@ -47,8 +47,8 @@ function createMap () {
 
         let data = globalAtmos.metadata.filter((d) => d.NAME === event.target.__data__.NAME)[0];
         let name = data.HEADER;
-        let latlon = `${(+data.LATITUDE).toFixed(2)}°N, ${(+data.LONGITUDE).toFixed(2)}°W`;
-        let elevation = `Elevation: ${Math.round(data.ELEVATION)} meters`;
+        let latlon       = `${(+data.LATITUDE).toFixed(2)}°N, ${(+data.LONGITUDE).toFixed(2)}°W`;
+        let elevation    = `Elevation: ${Math.round(data.ELEVATION)} meters`;
         let combinedText = `${name}\n${latlon}\n${elevation}`;
 
         let xOffset = name.length / 50;
@@ -230,83 +230,112 @@ function createMap () {
     // bar chart //
     let chart_monthly = svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, -${MARGIN.bottom})`);
-  
-      chart_monthly.selectAll("rect")
-      .data(pMonthly)
-      .enter()
+
+    const bars = chart_monthly.selectAll("rect")
+    .data(pMonthly);
+    
+    bars.exit()
+      .transition()
+      .duration(1000)
+      .attr("height", 0)
+      .remove();
+    
+    bars.enter()
       .append("rect")
       .attr("x", function(d) { return xScaleMonth(d.month); })
-      .attr("y", function(d) { return yScalePrMonth(+d.value) + MARGIN.top; })
+      .attr("y", CLIMO_HEIGHT - MARGIN.bottom) // Start at the bottom
       .attr("width", xScaleMonth.bandwidth())
-      .attr("height", function(d) { return CLIMO_HEIGHT - yScalePrMonth(+d.value) - MARGIN.top; })
+      .attr("height", 0) // Start with height 0 for animation
       .attr("class", "precip")
-      .on('mouseover', function(event) { 
-        this.classList.add('hover')
-      
-        let box = chart_monthly.append('rect')
-          .attr('rx', 5)
-          .attr('ry', 5)
-
-        let tt = chart_monthly.append('text')
-            .text(`${d3.format('.2f')(event.target.__data__.value)} inch`)
-            .attr("x", xScaleMonth(event.target.__data__.month)-8)
-            .attr("y", yScalePrMonth(event.target.__data__.value))
-            .style("text-anchor", "start")
-            .attr('id', 'label-text');
-
-        box.attr('width', tt.node().getBBox().width+14)
-            .attr('height', tt.node().getBBox().height+4)
-            .attr('x', tt.node().getBBox().x-7)
-            .attr('y', tt.node().getBBox().y-2)
-            .attr('id', 'label-rect');
-      })
-      .on('mouseout', function() { 
-        this.classList.remove('hover');
-
-        chart_monthly.select('#label-text').remove();
-        chart_monthly.select('#label-rect').remove();
+      .merge(bars)
+      .transition() // Add a transition to smoothly update bars
+      .duration(1000)
+      .attr("y", function(d) { return yScalePrMonth(+d.value) + MARGIN.top; })
+      .attr("height", function(d) { return CLIMO_HEIGHT - yScalePrMonth(+d.value) - MARGIN.top; })
+      .on("end", function() {
+        // Add mouseover interaction here
+        d3.select(this)
+          .on('mouseover', function(event) { 
+            this.classList.add('hover');
+    
+            let box = chart_monthly.append('rect')
+              .attr('rx', 5)
+              .attr('ry', 5);
+    
+            let tt = chart_monthly.append('text')
+              .text(`${d3.format('.2f')(event.target.__data__.value)} inch`)
+              .attr("x", xScaleMonth(event.target.__data__.month) - 8)
+              .attr("y", yScalePrMonth(event.target.__data__.value))
+              .style("text-anchor", "start")
+              .attr('id', 'label-text');
+    
+            box.attr('width', tt.node().getBBox().width + 14)
+              .attr('height', tt.node().getBBox().height + 4)
+              .attr('x', tt.node().getBBox().x - 7)
+              .attr('y', tt.node().getBBox().y - 2)
+              .attr('id', 'label-rect');
+          })
+          .on('mouseout', function() { 
+            this.classList.remove('hover');
+    
+            chart_monthly.select('#label-text').remove();
+            chart_monthly.select('#label-rect').remove();
+          });
       });
-  
     // line and scatter chart //
-    chart_monthly.append("path")
+    const linePath = chart_monthly.append("path")
       .datum(tMonthly)
       .attr("d", d3.line()
-        .x(function(d) { return xScaleMonth(d.month) + xScaleMonth.bandwidth()/2; })
+        .x(function(d) { return xScaleMonth(d.month) + xScaleMonth.bandwidth() / 2; })
         .y(function(d) { return yScaleTMonth(d.value); }))
       .attr('class', 'temp');
-  
+
+    // Add transitions to the line chart
+    linePath
+      .attr("stroke-dasharray", function() { return this.getTotalLength() + " " + this.getTotalLength(); })
+      .attr("stroke-dashoffset", function() { return this.getTotalLength(); })
+      .transition()
+      .duration(1000)
+      .attr("stroke-dashoffset", 0);
+
     chart_monthly.selectAll("circle")
       .data(tMonthly)
       .enter()
       .append("circle")
-      .attr("cx", function(d) { return xScaleMonth(d.month) + xScaleMonth.bandwidth()/2; })
-      .attr("cy", function(d) { return yScaleTMonth(d.value); })
+      .attr("cx", function(d) { return xScaleMonth(d.month) + xScaleMonth.bandwidth() / 2; })
+      .attr("cy", CLIMO_HEIGHT - MARGIN.bottom) // Start at the bottom
       .attr("r", 13)
       .attr("class", "temp")
-      .on('mouseover', function(event) { 
+      .merge(chart_monthly.selectAll("circle"))
+      .transition()
+      .duration(1000)
+      .attr("cy", function(d) { return yScaleTMonth(d.value) + MARGIN.top; });
+
+    // Add mouseover interaction to the circles
+    chart_monthly.selectAll("circle")
+      .on('mouseover', function(event) {
         this.classList.add('hover');
-      
+
         let box = chart_monthly.append('rect')
           .attr('rx', 5)
-          .attr('ry', 5)
+          .attr('ry', 5);
 
         let tt = chart_monthly.append('text')
-            .text(`${d3.format('.1f')(event.target.__data__.value)} °F`)
-            .attr("x", xScaleMonth(event.target.__data__.month)-3)
-            .attr("y", yScaleTMonth(event.target.__data__.value+8))
-            .style("text-anchor", "start")
-            .attr('id', 'label-text');
+          .text(`${d3.format('.1f')(event.target.__data__.value)} °F`)
+          .attr("x", xScaleMonth(event.target.__data__.month) - 3)
+          .attr("y", yScaleTMonth(event.target.__data__.value + 8))
+          .style("text-anchor", "start")
+          .attr('id', 'label-text');
 
-        box.attr('width', tt.node().getBBox().width+14)
-            .attr('height', tt.node().getBBox().height+4)
-            .attr('x', tt.node().getBBox().x-7)
-            .attr('y', tt.node().getBBox().y-2)
-            .attr('id', 'label-rect');
-          
-          })
-      .on('mouseout', function() { 
+        box.attr('width', tt.node().getBBox().width + 14)
+          .attr('height', tt.node().getBBox().height + 4)
+          .attr('x', tt.node().getBBox().x - 7)
+          .attr('y', tt.node().getBBox().y - 2)
+          .attr('id', 'label-rect');
+      })
+      .on('mouseout', function() {
         this.classList.remove('hover');
-      
+
         chart_monthly.select('#label-text').remove();
         chart_monthly.select('#label-rect').remove();
       });
