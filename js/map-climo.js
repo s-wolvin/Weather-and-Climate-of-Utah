@@ -150,8 +150,6 @@ function createMap () {
     return dataset
   }
   
-  
-  
   // function for updating the station climatology next to the map based on named passed
   function updateStationClimo (name) {
     // pull desired data
