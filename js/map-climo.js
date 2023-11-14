@@ -229,23 +229,23 @@ function createMap () {
     let chart_monthly = svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, -${MARGIN.bottom})`);
 
-    const bars = chart_monthly.selectAll("rect")
+    const bars_monthly = chart_monthly.selectAll("rect")
     .data(pMonthly);
     
-    bars.exit()
+    bars_monthly.exit()
       .transition()
       .duration(1000)
       .attr("height", 0)
       .remove();
     
-    bars.enter()
+    bars_monthly.enter()
       .append("rect")
       .attr("x", function(d) { return xScaleMonth(d.month); })
       .attr("y", CLIMO_HEIGHT - MARGIN.bottom) // Start at the bottom
       .attr("width", xScaleMonth.bandwidth())
       .attr("height", 0) // Start with height 0 for animation
       .attr("class", "precip")
-      .merge(bars)
+      .merge(bars_monthly)
       .transition() // Add a transition to smoothly update bars
       .duration(1000)
       .attr("y", function(d) { return yScalePrMonth(+d.value) + MARGIN.top; })
@@ -281,7 +281,7 @@ function createMap () {
           });
       });
     // line and scatter chart //
-    const linePath = chart_monthly.append("path")
+    const linePath_monthly = chart_monthly.append("path")
       .datum(tMonthly)
       .attr("d", d3.line()
         .x(function(d) { return xScaleMonth(d.month) + xScaleMonth.bandwidth() / 2; })
@@ -289,7 +289,7 @@ function createMap () {
       .attr('class', 'temp');
 
     // Add transitions to the line chart
-    linePath
+    linePath_monthly
       .attr("stroke-dasharray", function() { return this.getTotalLength() + " " + this.getTotalLength(); })
       .attr("stroke-dashoffset", function() { return this.getTotalLength(); })
       .transition()
@@ -307,7 +307,7 @@ function createMap () {
       .merge(chart_monthly.selectAll("circle"))
       .transition()
       .duration(1000)
-      .attr("cy", function(d) { return yScaleTMonth(d.value) + MARGIN.top; });
+      .attr("cy", function(d) { return yScaleTMonth(d.value); });
 
     // Add mouseover interaction to the circles
     chart_monthly.selectAll("circle")
@@ -406,83 +406,114 @@ function createMap () {
     // bar chart
     chart_yearly = svg.append('g')
       .attr('transform', `translate(${MARGIN.left}, -${MARGIN.bottom})`);
-  
-    chart_yearly.selectAll("rect")
-      .data(pYearly)
-      .enter()
-      .append("rect")
-      .attr("x", function(d) { return xScaleYear(d.year); })
-      .attr("y", function(d) { return yScalePrYear(+d.value) + MARGIN.top; })
-      .attr("width", xScaleYear.bandwidth())
-      .attr("height", function(d) { return CLIMO_HEIGHT - yScalePrYear(+d.value) - MARGIN.top; })
-      .attr("class", "precip")
-      .on('mouseover', function(event) { 
-        this.classList.add('hover');
-      
-        let box = chart_yearly.append('rect')
-          .attr('rx', 5)
-          .attr('ry', 5)
 
-        let tt = chart_yearly.append('text')
-            .text(`${d3.format('.2f')(event.target.__data__.value)} inch`)
-            .attr("x", xScaleYear(event.target.__data__.year)+10)
-            .attr("y", yScalePrYear(event.target.__data__.value))
-            .style("text-anchor", "middle")
-            .attr('id', 'label-text');
+    const bars_yearly = chart_yearly.selectAll("rect").data(pYearly);
 
-        box.attr('width', tt.node().getBBox().width+14)
-            .attr('height', tt.node().getBBox().height+4)
-            .attr('x', tt.node().getBBox().x-7)
-            .attr('y', tt.node().getBBox().y-2)
-            .attr('id', 'label-rect');
-          })
-      .on('mouseout', function() { 
-        this.classList.remove('hover');
-      
-        chart_yearly.select('#label-text').remove();
-        chart_yearly.select('#label-rect').remove();
-      });
-  
-    chart_yearly.append("path")
-      .datum(tYearly)
-      .attr("d", d3.line()
-        .x(function(d) { return xScaleYear(d.year) + xScaleYear.bandwidth()/2; })
-        .y(function(d) { return yScaleTYear(d.value); }))
-      .attr("class", "temp");
+    bars_yearly.exit()
+    .transition()
+    .duration(1000)
+    .attr("height", 0)
+    .remove();
+
+    bars_yearly.enter()
+    .append("rect")
+    .attr("x", function(d) { return xScaleYear(d.year); })
+    .attr("y", CLIMO_HEIGHT - MARGIN.bottom) // Start at the bottom
+    .attr("width", xScaleYear.bandwidth())
+    .attr("height", 0) // Start with height 0 for animation
+    .attr("class", "precip")
+    .merge(bars_yearly)
+    .transition() // Add a transition to smoothly update bars
+    .duration(1000)
+    .attr("y", function(d) { return yScalePrYear(+d.value) + MARGIN.top; })
+    .attr("height", function(d) { return CLIMO_HEIGHT - yScalePrYear(+d.value) - MARGIN.top; })
+    .on("end", function() {
+         // Add mouseover interaction here
+         d3.select(this)
+         .on('mouseover', function(event) { 
+           this.classList.add('hover');
+   
+           let box = chart_yearly.append('rect')
+             .attr('rx', 5)
+             .attr('ry', 5);
+   
+           let tt = chart_yearly.append('text')
+             .text(`${d3.format('.2f')(event.target.__data__.value)} inch`)
+             .attr("x", xScaleYear(event.target.__data__.year) - 8)
+             .attr("y", yScalePrYear(event.target.__data__.value))
+             .style("text-anchor", "start")
+             .attr('id', 'label-text');
+   
+           box.attr('width', tt.node().getBBox().width + 14)
+             .attr('height', tt.node().getBBox().height + 4)
+             .attr('x', tt.node().getBBox().x - 7)
+             .attr('y', tt.node().getBBox().y - 2)
+             .attr('id', 'label-rect');
+         })
+         .on('mouseout', function() { 
+           this.classList.remove('hover');
+   
+           chart_yearly.select('#label-text').remove();
+           chart_yearly.select('#label-rect').remove();
+         });
+     });
+
+    // line and scatter chart //
+    const linePath_yearly = chart_yearly.append("path")
+    .datum(tYearly)
+    .attr("d", d3.line()
+      .x(function(d) { return xScaleYear(d.year) + xScaleYear.bandwidth() / 2; })
+      .y(function(d) { return yScaleTYear(d.value); }))
+    .attr('class', 'temp');
+
+    // Add transitions to the line chart
+    linePath_yearly
+    .attr("stroke-dasharray", function() { return this.getTotalLength() + " " + this.getTotalLength(); })
+    .attr("stroke-dashoffset", function() { return this.getTotalLength(); })
+    .transition()
+    .duration(1000)
+    .attr("stroke-dashoffset", 0);
   
     chart_yearly.selectAll("circle")
-      .data(tYearly)
-      .enter()
-      .append("circle")
-      .attr("cx", function(d) { return xScaleYear(d.year) + xScaleYear.bandwidth()/2; })
-      .attr("cy", function(d) { return yScaleTYear(d.value); })
-      .attr("r", 8)
-      .attr("class", "temp")
-      .on('mouseover', function(event) { 
+    .data(tYearly)
+    .enter()
+    .append("circle")
+    .attr("cx", function(d) { return xScaleYear(d.year) + xScaleYear.bandwidth() / 2; })
+    .attr("cy", CLIMO_HEIGHT - MARGIN.bottom) // Start at the bottom
+    .attr("r", 9)
+    .attr("class", "temp")
+    .merge(chart_yearly.selectAll("circle"))
+    .transition()
+    .duration(1000)
+    .attr("cy", function(d) { return yScaleTYear(d.value); });
+
+    // Add mouseover interaction to the circles
+    chart_yearly.selectAll("circle")
+      .on('mouseover', function(event) {
         this.classList.add('hover');
-      
+
         let box = chart_yearly.append('rect')
-        .attr('rx', 5)
-        .attr('ry', 5)
+          .attr('rx', 5)
+          .attr('ry', 5);
 
         let tt = chart_yearly.append('text')
-            .text(`${d3.format('.1f')(event.target.__data__.value)} °F`)
-            .attr("x", xScaleYear(event.target.__data__.year)-15)
-            .attr("y", yScaleTYear(event.target.__data__.value+1))
-            .style("text-anchor", "start")
-            .attr('id', 'label-text');
+          .text(`${d3.format('.1f')(event.target.__data__.value)} °F`)
+          .attr("x", xScaleYear(event.target.__data__.year) - 3)
+          .attr("y", yScaleTYear(event.target.__data__.value + 8))
+          .style("text-anchor", "start")
+          .attr('id', 'label-text');
 
-        box.attr('width', tt.node().getBBox().width+14)
-            .attr('height', tt.node().getBBox().height+4)
-            .attr('x', tt.node().getBBox().x-7)
-            .attr('y', tt.node().getBBox().y-2)
-            .attr('id', 'label-rect');
-        })
-      .on('mouseout', function() { 
+        box.attr('width', tt.node().getBBox().width + 14)
+          .attr('height', tt.node().getBBox().height + 4)
+          .attr('x', tt.node().getBBox().x - 7)
+          .attr('y', tt.node().getBBox().y - 2)
+          .attr('id', 'label-rect');
+      })
+      .on('mouseout', function() {
         this.classList.remove('hover');
-      
+
         chart_yearly.select('#label-text').remove();
         chart_yearly.select('#label-rect').remove();
       });
-  
+    
   }
