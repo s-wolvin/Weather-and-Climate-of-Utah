@@ -319,7 +319,7 @@ function createMap () {
           .attr('ry', 5);
 
         let tt = chart_monthly.append('text')
-          .text(`${d3.format('.1f')(event.target.__data__.value)} °F`)
+          .text(`${d3.format('.1f')(event.target.__data__.value)}°F`)
           .attr("x", xScaleMonth(event.target.__data__.month) - 3)
           .attr("y", yScaleTMonth(event.target.__data__.value + 8))
           .style("text-anchor", "start")
@@ -439,7 +439,7 @@ function createMap () {
    
            let tt = chart_yearly.append('text')
              .text(`${d3.format('.2f')(event.target.__data__.value)} inch`)
-             .attr("x", xScaleYear(event.target.__data__.year) - 8)
+             .attr("x", xScaleYear(event.target.__data__.year) - 30)
              .attr("y", yScalePrYear(event.target.__data__.value))
              .style("text-anchor", "start")
              .attr('id', 'label-text');
@@ -497,9 +497,9 @@ function createMap () {
           .attr('ry', 5);
 
         let tt = chart_yearly.append('text')
-          .text(`${d3.format('.1f')(event.target.__data__.value)} °F`)
-          .attr("x", xScaleYear(event.target.__data__.year) - 3)
-          .attr("y", yScaleTYear(event.target.__data__.value + 8))
+          .text(`${d3.format('.1f')(event.target.__data__.value)}°F`)
+          .attr("x", xScaleYear(event.target.__data__.year) - 15)
+          .attr("y", yScaleTYear(event.target.__data__.value + 1))
           .style("text-anchor", "start")
           .attr('id', 'label-text');
 

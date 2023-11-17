@@ -7,8 +7,11 @@ const MAP_HEIGHT = 600;
 const CLIMO_WIDTH = MAP_WIDTH*2;
 const CLIMO_HEIGHT = MAP_HEIGHT/2;
 
-const NHWR_WIDTH = 1100;
+const NHWR_WIDTH = 1000;
 const NHWR_HEIGHT = 500;
+
+const GRAD_WIDTH = 800;
+const GRAD_HEIGHT = 700;
 
 const MARGIN = { left: 65, bottom: 20, top: 20, right: 30 };
 const ANIMATION_DUATION = 300;
@@ -24,11 +27,13 @@ async function loadData () {
   const pYearly = await d3.csv('data/precip_yearly_sum.csv');
   const pCoolSsn = await d3.csv('data/station_cool_season_PRCP.csv');
   const tWarmSsn = await d3.csv('data/station_warm_season_TAVG.csv');
+  const tSeasonal = await d3.csv('data/station_seasonal_mean_temp.csv');
+  const pSeasonal = await d3.csv('data/station_seasonal_mean_total_prcp.csv');
 
   const gsl_water_level = await d3.csv('data/GSL_monthly_water_elev');
   const wildfire_acres = await d3.csv('data/utah_wildfire_yearly_acres')
   return { metadata, tMonthly, pMonthly, tYearly, pYearly, pCoolSsn, tWarmSsn,
-    gsl_water_level, wildfire_acres };
+    tSeasonal, pSeasonal, gsl_water_level, wildfire_acres };
 }
 
 
@@ -41,6 +46,8 @@ const globalAtmos = {
   pYearly: null,
   pCoolSsn: null,
   tWarmSsn: null,
+  tSeasonal: null,
+  pSeasonal: null,
 };
 
 const hazards_resources = {
@@ -58,6 +65,8 @@ loadData().then((loadedData) => {
   globalAtmos.pYearly = loadedData.pYearly;
   globalAtmos.pCoolSsn = loadedData.pCoolSsn;
   globalAtmos.tWarmSsn = loadedData.tWarmSsn;
+  globalAtmos.tSeasonal = loadedData.tSeasonal;
+  globalAtmos.pSeasonal = loadedData.pSeasonal;
 
   hazards_resources.gsl_water_level = loadedData.gsl_water_level;
   hazards_resources.wildfire_acres = loadedData.wildfire_acres;
@@ -69,7 +78,7 @@ loadData().then((loadedData) => {
     .attr('height', MAP_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'utah-map-svg');
 
-  // create div for monthly climo
+  // create svg for monthly climo
   d3.select('#station-climo-div')
     .append('svg')
     .attr('width', CLIMO_WIDTH + MARGIN.left + MARGIN.right)
@@ -82,15 +91,23 @@ loadData().then((loadedData) => {
     .attr('height', CLIMO_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'yearly-climo-svg');
 
+  // create svg for orographic gradients
+  d3.select('#grad-div')
+    .append('svg')
+    .attr('width', GRAD_WIDTH + MARGIN.left + MARGIN.right)
+    .attr('height', GRAD_HEIGHT + MARGIN.top + MARGIN.bottom)
+    .attr('id', 'grad-svg');
+
+  // create svg for natural hazards and GSL water elevation
   d3.select('#wf-temp-div')
     .append('svg')
-    .attr('width', '100%')
+    .attr('width', NHWR_WIDTH + MARGIN.left + MARGIN.right)
     .attr('height', NHWR_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'wf-temp-svg');
 
   d3.select('#gsl-precip-div')
     .append('svg')
-    .attr('width', '100%')
+    .attr('width', NHWR_WIDTH + MARGIN.left + MARGIN.right)
     .attr('height', NHWR_HEIGHT + MARGIN.top + MARGIN.bottom)
     .attr('id', 'gsl-precip-svg');
 

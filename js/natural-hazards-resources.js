@@ -145,7 +145,7 @@ function plotGSL() {
 
     // x-axis //
     const xScale = d3.scalePoint()
-        .range([0, nhwr_width - MARGIN.left - (MARGIN.right*3)])
+        .range([0, nhwr_width - MARGIN.left - MARGIN.right])
         .domain(gsl_water.map((d) => d.date));
 
     svg.append('g')
@@ -168,7 +168,7 @@ function plotGSL() {
       .domain([d3.min(gsl_water.map((d) => +d.elev))*0.999, d3.max(gsl_water.map((d) => +d.elev))*1.001]);
   
     svg.append('g')
-      .attr('transform', `translate(${nhwr_width-(MARGIN.right*3)}, 0)`)
+      .attr('transform', `translate(${nhwr_width-MARGIN.right}, 0)`)
       .call(d3.axisRight(yScale).ticks(5))
       .attr("id", "y-axis-gsl")
       .attr('class', 'x-axis');
@@ -271,7 +271,7 @@ function plotGSL() {
     d3.select("#gsl-precip-svg").on('mousemove', function (event) {
         let [xPos, yPos] = d3.pointer(event); // find mouse location
 
-        if (xPos > MARGIN.left && xPos <= nhwr_width-(MARGIN.right*3)) {
+        if (xPos > MARGIN.left && xPos <= nhwr_width-MARGIN.right) {
             d3.select("#vert-line").attr('x1', xPos).attr('x2', xPos); // update line
 
             // pull the domain and range of xscale

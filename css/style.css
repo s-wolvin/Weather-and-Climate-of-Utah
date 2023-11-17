@@ -11,7 +11,7 @@ h1 {
 
 h2 {
     text-align: center;
-    font-size: 30px;
+    font-size: 35px;
     color: #d8d8d8;
 }
 
@@ -20,6 +20,22 @@ h3 {
     font-size: 25px;
     font-style: italic;
     color: #d8d8d8;
+}
+
+p {
+    text-align: left;
+    font-size: 20px;
+    color: #d8d8d8;
+    text-wrap: wrap;
+}
+
+label {
+    color: #d8d8d8;
+    font-size: 20px;
+}
+
+select {
+    font-size: 20px;
 }
 
 #banner {
@@ -47,7 +63,15 @@ div#utah-map-div {
 /** used to allow the DIVs to be next to one another */ 
 .row { 
     display: flex;
-    flex-wrap: wrap;
+}
+
+.left-div {
+    flex: 0 0 auto;
+    margin-right: 5px;
+}
+
+.right-div {
+    flex: 1;
 }
 
 .climo {
@@ -83,6 +107,16 @@ rect.precip {
 }
 
 rect.precip.hover {
+    fill: #a1d3f5;
+    stroke: #dfe8e9;
+}
+
+circle.precip {
+    fill: #2b57cf;
+    stroke: #dfe8e9;
+}
+
+circle.precip.hover {
     fill: #a1d3f5;
     stroke: #dfe8e9;
 }
@@ -151,5 +185,30 @@ rect#label-rect {
     stroke: #292725;
     
 }
+
+
+/** settingd for the link colors*/
+a:link {
+    color: orange;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:visited {
+color: pink;
+background-color: transparent;
+text-decoration: none;
+}
+
+a:hover {
+color: rgb(248, 106, 106);
+background-color: transparent;
+text-decoration: underline;
+}
+
+
+
+
+
 
 
