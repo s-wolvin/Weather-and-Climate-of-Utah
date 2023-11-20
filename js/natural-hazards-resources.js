@@ -66,7 +66,7 @@ function plotWildfire() {
 
     // circle radius scale //
     const rScale = d3.scaleLinear()
-        .range([5, 45])
+        .range([5, 41])
         .domain([d3.min(dataset.map((d) => +d.acres)), d3.max(dataset.map((d) => +d.acres))])
 
     // scatter chart

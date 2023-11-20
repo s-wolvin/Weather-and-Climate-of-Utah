@@ -20,9 +20,6 @@ function changeOG () {
     }
 
     // plot orographic gradients
-    console.log(gradset)
-    console.log(globalAtmos.metadata)
-
     // select svg
     const svg = d3.select("#grad-svg");
 
@@ -94,6 +91,9 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
     .text(season)
     .attr("class", "x-axis");
 
+  // label formatting
+  let frmt = d3.format('.1f');
+
   // APPEND SCATTER PLOT //
   let chart = svg.append('g')
     .attr('transform', `translate(${x}, ${y})`);
@@ -112,9 +112,14 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
 
       let data = globalAtmos.metadata.filter((d) => d.NAME === event.target.__data__.NAME)[0];
       let name = data.HEADER;
-      let value       = `${event.target.__data__[`${season}`]}`;
+      let value = [];
+      if (dataFile === 'precip') {
+        value       = `Precipitation: ${frmt(event.target.__data__[`${season}`])} inches`;
+      } else if (dataFile === 'temp') {
+        value       = `Temperature: ${frmt(event.target.__data__[`${season}`])}°F`;
+      }
       let elevation    = `Elevation: ${Math.round(data.ELEVATION)} meters`;
-      let combinedText = `${name}\n${value}\n${elevation}`;
+      let combinedText = `${name},\n${value},\n${elevation}`;
 
       let yOffset = 70;
 
@@ -144,6 +149,9 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
         .attr('y', tt.node().getBBox().y - 3)
         .attr('id', 'label-rect');
 
+      const spanById = document.getElementById('grad-labels');
+      spanById.textContent = combinedText;
+
     })
     .on('mouseout', function(event) {
       this.classList.remove('hover');
@@ -151,5 +159,8 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
 
       chart.select('#label-text').remove();
       chart.select('#label-rect').remove();
+
+      const spanById = document.getElementById('grad-labels');
+      spanById.textContent = '';
     })
 }

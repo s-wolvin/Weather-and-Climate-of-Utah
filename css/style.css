@@ -1,5 +1,5 @@
 body {
-    background-color: #292725;
+    background-color: #363431;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
@@ -29,7 +29,7 @@ p {
     text-wrap: wrap;
 }
 
-label {
+span {
     color: #d8d8d8;
     font-size: 20px;
 }
