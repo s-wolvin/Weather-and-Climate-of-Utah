@@ -57,7 +57,6 @@ function changeOG () {
       .text(y_axis_text)
       .attr("class", `${dataFile}`);
 
-
     plotPanel(svg, gradset, 'Winter', MARGIN.left+panelMARGIN, MARGIN.top+panelMARGIN+panelHeight, panelWidth, panelHeight, xScale, yScale, dataFile);
     plotPanel(svg, gradset, 'Spring', MARGIN.left+(panelMARGIN*3)+panelWidth, MARGIN.top+panelMARGIN+panelHeight, panelWidth, panelHeight, xScale, yScale, dataFile);
     plotPanel(svg, gradset, 'Summer', MARGIN.left+panelMARGIN, MARGIN.top+(panelMARGIN*3)+(panelHeight*2), panelWidth, panelHeight, xScale, yScale, dataFile);
@@ -163,4 +162,13 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
       const spanById = document.getElementById('grad-labels');
       spanById.textContent = '';
     })
+
+  // Add animation when selecting option from dropdown
+  chart
+    .selectAll('circle')
+    .attr('r', 0) // Start with zero radius
+    .transition()
+    .duration(750)
+    .attr('r', 5); // Transition to the desired radius
+    
 }

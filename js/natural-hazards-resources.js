@@ -111,6 +111,23 @@ function plotWildfire() {
             chart.select('#label-rect').remove();
         });
 
+    // Add reference circle for 100,000 acres
+    const referenceAcres = 100000;
+    chart.append("circle")
+        .attr("cx", MARGIN.left - 30)
+        .attr("cy", NHWR_HEIGHT - MARGIN.bottom - 10)
+        .attr("r", rScale(referenceAcres))
+        .attr("class", "temp");
+
+    // Add text to right of legend circle
+    chart.append("text")
+    .attr("x", MARGIN.left + rScale(referenceAcres) - 25) // Adjust the x-coordinate for positioning
+    .attr("y", NHWR_HEIGHT - MARGIN.bottom - 10) // Align the text with the center of the circle
+    .attr("dy", "0.35em") // Center the text vertically
+    .text("100k acres")
+    .attr("font-size", "18px")
+    .attr("fill", "white");
+
 }
 
 function orgCoolSsn (data) {
