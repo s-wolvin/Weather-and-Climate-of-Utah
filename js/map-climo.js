@@ -9,7 +9,7 @@ function createMap () {
     let projection = d3.geoConicConformal()
       .center([-111, 39])
       .rotate([111,0])
-      .translate([-7730,-3850])
+      .translate([-7730,-3835])
       .scale(6200)
  
     //let projection = d3.geoConicEqualArea()

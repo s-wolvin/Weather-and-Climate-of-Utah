@@ -126,7 +126,7 @@ function plotWildfire() {
     .attr("dy", "0.35em") // Center the text vertically
     .text("100k acres")
     .attr("font-size", "18px")
-    .attr("fill", "white");
+    .attr("class", "x-axis");
 
 }
 

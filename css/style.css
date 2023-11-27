@@ -27,6 +27,7 @@ p {
     font-size: 20px;
     color: #d8d8d8;
     text-wrap: wrap;
+    text-indent: 30px; 
 }
 
 span {
@@ -72,6 +73,7 @@ div#utah-map-div {
 
 .right-div {
     flex: 1;
+    min-width: 300px;
 }
 
 .climo {

@@ -93,6 +93,9 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
   // label formatting
   let frmt = d3.format('.1f');
 
+  // formulate the average value of that subset
+  let midline = d3.mean(yScale.domain());
+
   // APPEND SCATTER PLOT //
   let chart = svg.append('g')
     .attr('transform', `translate(${x}, ${y})`);
@@ -113,43 +116,135 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
       let name = data.HEADER;
       let value = [];
       if (dataFile === 'precip') {
-        value       = `Precipitation: ${frmt(event.target.__data__[`${season}`])} inches`;
+        value       = `Precip: ${frmt(event.target.__data__[`${season}`])} inches`;
       } else if (dataFile === 'temp') {
-        value       = `Temperature: ${frmt(event.target.__data__[`${season}`])}°F`;
+        value       = `Temp: ${frmt(event.target.__data__[`${season}`])}°F`;
       }
-      let elevation    = `Elevation: ${Math.round(data.ELEVATION)} meters`;
-      let combinedText = `${name},\n${value},\n${elevation}`;
+      let elevation    = `Elev: ${Math.round(data.ELEVATION)} meters`;
+      let combinedText = `${name},${value},${elevation}`;
+      const len = combinedText.length;
 
-      let yOffset = 70;
+      let yOffset_above = 19;
+      let yOffset_below = 11;
 
-      let box = chart.append('rect')
-            .attr("rx", 5)
-            .attr("ry", 5);
+      if (event.target.__data__.ELEVATION > 1700 && event.target.__data__[`${season}`] < midline) {
+        // upper elevation, below midline
+        let box = chart.append('rect')
+              .attr("rx", 5)
+              .attr("ry", 5);
 
-      let tt = chart.append('text')
-        //.text(combinedText)
-        .attr("x", xScale(event.target.__data__.ELEVATION))
-        .attr("y", yScale(event.target.__data__[`${season}`]) - panelHeight - yOffset)
-        .style("text-anchor", "middle")
-        .attr('id', 'label-text')
+        let lines = combinedText.split(',');
+        lines = lines.filter(item => item !== ' UT') // filter out UT
 
-      const lines = combinedText.split('\n');
-      tt.selectAll('tspan')
-        .data(lines)
-        .enter()
-        .append('tspan')
-        .text(d => d)
-        .attr('x', tt.attr('x'))
-        .attr('dy', (d, i) => i === 0 ? '0' : '1.1em');
-  
-      box.attr('width', tt.node().getBBox().width + 14)
-        .attr('height', tt.node().getBBox().height + 4)
-        .attr('x', tt.node().getBBox().x - 7)
-        .attr('y', tt.node().getBBox().y - 3)
-        .attr('id', 'label-rect');
+        let tt = chart.append('text')
+          //.text(combinedText)
+          .attr("x", xScale(+event.target.__data__.ELEVATION - ((+event.target.__data__.ELEVATION-1700)/3.5)))
+          .attr("y", yScale(event.target.__data__[`${season}`]) - panelHeight - (yOffset_above*lines.length))
+          .style("text-anchor", "middle")
+          .attr('id', 'label-text')
 
-      const spanById = document.getElementById('grad-labels');
-      spanById.textContent = combinedText;
+        tt.selectAll('tspan')
+          .data(lines)
+          .enter()
+          .append('tspan')
+          .text(d => d)
+          .attr('x', tt.attr('x'))
+          .attr('dy', (d, i) => i === 0 ? '0' : '1.1em');
+    
+        box.attr('width', tt.node().getBBox().width + 14)
+          .attr('height', tt.node().getBBox().height + 4)
+          .attr('x', tt.node().getBBox().x - 7)
+          .attr('y', tt.node().getBBox().y - 3)
+          .attr('id', 'label-rect');
+      } else if (event.target.__data__.ELEVATION < 1700 && event.target.__data__[`${season}`] < midline) {
+        // lower elevation, below midline
+        let box = chart.append('rect')
+        .attr("rx", 5)
+        .attr("ry", 5);
+
+        let lines = combinedText.split(',');
+        lines = lines.filter(item => item !== ' UT') // filter out UT
+
+        let tt = chart.append('text')
+          //.text(combinedText)
+          .attr("x", xScale(+event.target.__data__.ELEVATION + ((1700-event.target.__data__.ELEVATION)/3.5)))
+          .attr("y", yScale(event.target.__data__[`${season}`]) - panelHeight - (yOffset_above*lines.length))
+          .style("text-anchor", "middle")
+          .attr('id', 'label-text')
+
+        tt.selectAll('tspan')
+          .data(lines)
+          .enter()
+          .append('tspan')
+          .text(d => d)
+          .attr('x', tt.attr('x'))
+          .attr('dy', (d, i) => i === 0 ? '0' : '1.1em');
+
+        box.attr('width', tt.node().getBBox().width + 14)
+          .attr('height', tt.node().getBBox().height + 4)
+          .attr('x', tt.node().getBBox().x - 7)
+          .attr('y', tt.node().getBBox().y - 3)
+          .attr('id', 'label-rect');
+      } else if (event.target.__data__.ELEVATION > 1700 && event.target.__data__[`${season}`] > midline) {
+        // upper elevation, above midline
+        let box = chart.append('rect')
+              .attr("rx", 5)
+              .attr("ry", 5);
+
+        let lines = combinedText.split(',');
+        lines = lines.filter(item => item !== ' UT') // filter out UT
+
+        let tt = chart.append('text')
+          //.text(combinedText)
+          .attr("x", xScale(+event.target.__data__.ELEVATION - ((+event.target.__data__.ELEVATION-1700)/3.5)))
+          .attr("y", yScale(event.target.__data__[`${season}`]) - panelHeight + (yOffset_below*lines.length))
+          .style("text-anchor", "middle")
+          .attr('id', 'label-text')
+
+        tt.selectAll('tspan')
+          .data(lines)
+          .enter()
+          .append('tspan')
+          .text(d => d)
+          .attr('x', tt.attr('x'))
+          .attr('dy', (d, i) => i === 0 ? '0' : '1.1em');
+    
+        box.attr('width', tt.node().getBBox().width + 14)
+          .attr('height', tt.node().getBBox().height + 4)
+          .attr('x', tt.node().getBBox().x - 7)
+          .attr('y', tt.node().getBBox().y - 3)
+          .attr('id', 'label-rect');
+      } else if (event.target.__data__.ELEVATION < 1700 && event.target.__data__[`${season}`] > midline) {
+        // lower elevation, above midline
+        let box = chart.append('rect')
+        .attr("rx", 5)
+        .attr("ry", 5);
+
+        let lines = combinedText.split(',');
+        lines = lines.filter(item => item !== ' UT') // filter out UT
+
+        let tt = chart.append('text')
+          //.text(combinedText)
+          .attr("x", xScale(+event.target.__data__.ELEVATION + ((1700-event.target.__data__.ELEVATION)/3.5)))
+          .attr("y", yScale(event.target.__data__[`${season}`]) - panelHeight + (yOffset_below*lines.length))
+          .style("text-anchor", "middle")
+          .attr('id', 'label-text')
+
+        tt.selectAll('tspan')
+          .data(lines)
+          .enter()
+          .append('tspan')
+          .text(d => d)
+          .attr('x', tt.attr('x'))
+          .attr('dy', (d, i) => i === 0 ? '0' : '1.1em');
+
+        box.attr('width', tt.node().getBBox().width + 14)
+          .attr('height', tt.node().getBBox().height + 4)
+          .attr('x', tt.node().getBBox().x - 7)
+          .attr('y', tt.node().getBBox().y - 3)
+          .attr('id', 'label-rect');
+      }
+
 
     })
     .on('mouseout', function(event) {
@@ -159,8 +254,6 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
       chart.select('#label-text').remove();
       chart.select('#label-rect').remove();
 
-      const spanById = document.getElementById('grad-labels');
-      spanById.textContent = '';
     })
 
   // Add animation when selecting option from dropdown
@@ -169,6 +262,6 @@ function plotPanel(svg, gradset, season, x, y, panelWidth, panelHeight, xScale, 
     .attr('r', 0) // Start with zero radius
     .transition()
     .duration(750)
-    .attr('r', 5); // Transition to the desired radius
+    .attr('r', 6); // Transition to the desired radius
     
 }
