@@ -104,7 +104,7 @@ function plotWildfire() {
                 .attr('y', tt.node().getBBox().y-2)
                 .attr('id', 'label-rect');
             
-         })
+         }) 
         .on('mouseout', function() { 
             this.classList.remove('hover');
             chart.select('#label-text').remove();
