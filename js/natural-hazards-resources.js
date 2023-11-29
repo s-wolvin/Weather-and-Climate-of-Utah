@@ -112,22 +112,51 @@ function plotWildfire() {
         });
 
     // Add reference circle for 100,000 acres
-    const referenceAcres = 100000;
     chart.append("circle")
-        .attr("cx", MARGIN.left - 30)
-        .attr("cy", NHWR_HEIGHT - MARGIN.bottom - 10)
-        .attr("r", rScale(referenceAcres))
+        .attr("cx", MARGIN.left + 500)
+        .attr("cy", NHWR_HEIGHT - MARGIN.bottom - 25)
+        .attr("r", rScale(100000))
         .attr("class", "temp");
 
     // Add text to right of legend circle
     chart.append("text")
-    .attr("x", MARGIN.left + rScale(referenceAcres) - 25) // Adjust the x-coordinate for positioning
-    .attr("y", NHWR_HEIGHT - MARGIN.bottom - 10) // Align the text with the center of the circle
+    .attr("x", MARGIN.left + rScale(100000) + 383.5) // Adjust the x-coordinate for positioning
+    .attr("y", NHWR_HEIGHT - MARGIN.bottom - 25) // Align the text with the center of the circle
     .attr("dy", "0.35em") // Center the text vertically
     .text("100k acres")
     .attr("font-size", "18px")
     .attr("class", "x-axis");
 
+    chart.append("circle")
+        .attr("cx", MARGIN.left + 650)
+        .attr("cy", NHWR_HEIGHT - MARGIN.bottom - 25)
+        .attr("r", rScale(250000))
+        .attr("class", "temp");
+
+    // Add text to right of legend circle
+    chart.append("text")
+    .attr("x", MARGIN.left + rScale(250000) + 515) // Adjust the x-coordinate for positioning
+    .attr("y", NHWR_HEIGHT - MARGIN.bottom - 25) // Align the text with the center of the circle
+    .attr("dy", "0.35em") // Center the text vertically
+    .text("250k acres")
+    .attr("font-size", "18px")
+    .attr("class", "x-axis");
+
+    chart.append("circle")
+        .attr("cx", MARGIN.left + 825)
+        .attr("cy", NHWR_HEIGHT - MARGIN.bottom - 25)
+        .attr("r", rScale(500000))
+        .attr("class", "temp");
+
+    // Add text to right of legend circle
+    chart.append("text")
+    .attr("x", MARGIN.left + rScale(500000) + 660) // Adjust the x-coordinate for positioning
+    .attr("y", NHWR_HEIGHT - MARGIN.bottom - 25) // Align the text with the center of the circle
+    .attr("dy", "0.35em") // Center the text vertically
+    .text("500k acres")
+    .attr("font-size", "18px")
+    .attr("class", "x-axis");
+    
 }
 
 function orgCoolSsn (data) {
