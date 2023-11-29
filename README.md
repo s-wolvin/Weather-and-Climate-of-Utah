@@ -1,2 +1,4 @@
 # final-project-weather-and-climate-of-utah
-final-project-weather-and-climate-of-utah created by GitHub Classroom
+
+Savanna Wolvin, Michael Pletcher
+Video Submission: https://youtu.be/cW-xDsN0TH4
