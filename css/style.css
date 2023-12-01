@@ -197,9 +197,9 @@ a:link {
 }
 
 a:visited {
-color: pink;
-background-color: transparent;
-text-decoration: none;
+    color: orange;
+    background-color: transparent;
+    text-decoration: none;
 }
 
 a:hover {
