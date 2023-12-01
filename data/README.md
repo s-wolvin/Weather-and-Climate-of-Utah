@@ -18,6 +18,10 @@ ex_precip_monthly.csv - Contains monthly extreme precipitation <br />
 ex_precip_yearly.csv - Contains yearly extreme precipitation <br />
 precip_monthly.csv - Contains monthly precipitation <br />
 precip_yearly.csv - Contains yearly precipitation <br />
+precip_yearly_sum.csv - Contains yearly total precipitation <br />
+station_PRCP_year_cumsum.csv - Contains yearly total precipitation for selected stations <br />
+station_cool_season_PRCP.csv - Contains cool-season precipitation for selected stations <br />
+station_seasonal_mean_total_prcp.csv - Contains seasonal precipitation <br />
 
 ### Temperature
 temp_monthly.csv - Contains monthly average temperature <br />
@@ -26,3 +30,12 @@ tmax_monthly.csv - Contains monthly maximum temperature <br />
 tmax_yearly.csv - Contains yearly maximum temperature <br />
 tmin_monthly.csv - Contains monthly minimum temperature <br />
 tmin_yearly.csv - Contains yearly minimum temperature <br />
+station_seasonal_mean_temp.csv - Contain mean seasonal temperature at selected stations <br />
+station_warm_season_TAVG.csv - Contains warm season temperature <br />
+
+### Map data
+gz_2010_us_states_20m.json - Contains data for plotting map of Utah.
+
+### banners
+mtns.png - Used for banner at top of webpage.
+
